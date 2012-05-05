@@ -1,4 +1,5 @@
 from base import db, ORM
+from sqlalchemy import and_
 
 class Msg(db.Model, ORM):
     __tablename__ = 'msg'
@@ -28,3 +29,11 @@ class Msg(db.Model, ORM):
         self.city = city
         self.province = province
         self.datetime = datetime
+
+    @classmethod
+    def get_all_points(cls, cube):
+        #print cube
+        return cls.query.filter(and_(cls.lat<=cube[0][0],
+            cls.lat>=cube[2][0],
+            cls.lng>=cube[0][1],
+            cls.lng<=cube[1][1])).all()
