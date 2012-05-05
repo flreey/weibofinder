@@ -1,0 +1,11 @@
+*.pyc
+PYSM*
+*.swp
+tags
+db
+pysme*
+fab*
+root*
+log
+dump.rdb
+local.py
