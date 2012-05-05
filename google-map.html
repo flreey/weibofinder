@@ -25,16 +25,6 @@
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
     var contentString = '哈哈，新发现！';
-
-
-
-
-    
-/*
-    var infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-*/
   
     window.mark_infos = []
     for(var i = 0; i < 10; i++){
@@ -65,40 +55,6 @@
   $(function() {
       initialize()
       })
-
-
-
-/*
-    infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-
-    myLatlng = new google.maps.LatLng(-25.363882+1*10,131.044922+1);
-      marker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        title:"有新发现:-)"
-      });
-
-    google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map,marker);
-    });
-
-        infowindow = new google.maps.InfoWindow({
-        content: contentString
-      });
-
-    myLatlng = new google.maps.LatLng(-25.363882+2*10,131.044922+2);
-      marker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        title:"有新发现:-)"
-      });
-
-    google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map,marker);
-    });
-*/
 
 </script>
 </head>
