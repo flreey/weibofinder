@@ -37,3 +37,11 @@ class Msg(db.Model, ORM):
             cls.lat>=cube[2][0],
             cls.lng>=cube[0][1],
             cls.lng<=cube[1][1])).all()
+
+    @classmethod
+    def get_by_weibo_id(cls, wid):
+        return Msg.query.filter(cls.weibo_id==wid).first()
+
+    def save(self):
+        if not Msg.query.filter(Msg.weibo_id==self.weibo_id).first():
+            super(Msg, self).save()

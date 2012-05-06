@@ -31,7 +31,7 @@ def get_offset_cube(lat, lng, distance):
     right_top = lat + off_lat, lng + off_lng
     left_bottom = lat - off_lat, lng - off_lng
     right_bottom = lat - off_lat, lng + off_lng
-    r = lambda x:(round(x[0], 4), round(x[1], 4))
+    r = lambda x:(round(x[0], 7), round(x[1], 7))
 
     return r(left_top), r(right_top), r(left_bottom), r(right_bottom)
 

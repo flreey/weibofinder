@@ -14,98 +14,49 @@
     src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js">
 </script>
 <script type="text/javascript">
-    /*
-  function initialize(lat, lng) {
-    window.mark_infos = []
-    var myLatlng = new google.maps.LatLng(lng, lat);
-    var myOptions = {
-      zoom: 10,
-      center: myLatlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-
-    var show_map = function(msg) {
-        var showImage = "<img src='/static/adaptable.png'/>" + "<br/><br/><center>这里再添加微博内容！</center>";
-
-      info = new google.maps.InfoWindow({
-        content: showImage
-        });
-      window.mark_infos.push(info)
-
-      var myLatlng = new google.maps.LatLng(msg.lat, msg.lng);
-      var maker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        title:"有新发现:-)",
-        icon: msg.photo
-      });
-
-      google.maps.event.addListener(maker, 'click', function() {
-        for (var i = 0; i < window.mark_infos.length; ++i) {
-            window.mark_infos.close();
-        }
-        info.open(map, maker);
-      });
-
-    }
-
-    $.get('/asyn/'+lng+'/'+lat,
-        function(data) {
-            if (data.success) {
-                for (var i = 0; i < data.msgs.length; ++i) {
-                    show_map(data.msgs[i]);
-                }
-            }
-        }
-    )
-
-    $.get('/update', function(data) {
-        if (data.success) {
-            alert(data.msg);
-        }
-    })
-  }
-  */
 var map;
 var marker;
+window.infos = new Array();
 var infowindow;   //Global infowindow created
 function initialize(lat, lng) {
   var latlng = new google.maps.LatLng(lng, lat);
   var restaurants = new Array();
-  restaurants = [ 
-         new google.maps.LatLng(lng, lat),
-         ];
    var myOptions = {
-      zoom: 3,
+      zoom: 15,
       center: latlng,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(document.getElementById("map_canvas"),
         myOptions);
 
-    var asyn = function() {
-      $.get('/asyn/'+lng+'/'+lat,
+    var asyn = function(hello) {
+        if (hello == 1) {
+          var url = '/asyn/'+lng+'/'+lat;
+        } else {
+          var url = '/asyn/'+lng+'/'+lat+'/backup';
+        }
+
+      $.get(url,
             function(data) {
                 if (data.success) {
                     var msgs = data.msgs;
                     var i = 0; 
                     for ( i <0; i < msgs.length;i++ ){          
-                        var showImage = "<img src='"+msgs[i].photo+"'/>" + "<br/><br/><center>这里再添加微博内容！</center>";
-                        infowindow = new google.maps.InfoWindow({   //infowindow options set
+                    var showImage = "<div><a href=http://weibo.com/"+msgs[i].uid+"><img src='"+msgs[i].photo+"' width=200px height=200px/>" + "<br/><br/></a><center style=width:200px>"+msgs[i].content+"！</center></div>";
+                        var infowindow = new google.maps.InfoWindow({
                                content: showImage,
-                               size: new google.maps.Size(50, 20)
-        });
+                               size: new google.maps.Size(20, 20)});
+                        window.infos.push(infowindow);
 
 
                          var photo = new google.maps.LatLng(msgs[i].lng, msgs[i].lat);
-                          marker = new google.maps.Marker({
+
+                         var marker = new google.maps.Marker({
                                       position: photo,
                                       map:map,
                                       title:"Testing!",
                                });
-                           popupDirections(marker);
+                         popupDirections(marker, window.infos.length-1);
                     }
 
                 }
@@ -121,17 +72,23 @@ function initialize(lat, lng) {
             );
     }
 
+    asyn(1);
+
     function timeout() {
-        asyn();
-        //update();
+        asyn(0);
+        update();
     }
-    setInterval(timeout, 2000);
+    timeout();
+    setInterval(timeout, 30000);
 }
 
-function popupDirections(marker) {
+function popupDirections(marker, index) {
   //this function created listener listens for click on a marker
   google.maps.event.addListener(marker, 'click', function() {
-    infowindow.open(map,marker); //then opens the infowindow at the marker
+    for (var j = 0; j < window.infos.length; ++j) {
+        window.infos[j].close();
+    }
+    window.infos[index].open(map,marker); //then opens the infowindow at the marker
   });
 }
 
