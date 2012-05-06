@@ -19,25 +19,25 @@ def index(lat, lng):
 @app.route('/asyn/<float:lng>/<float:lat>/<backup>', methods=['GET'])
 @app.route('/asyn/<float:lng>/<float:lat>', methods=['GET'])
 def asyn(lat, lng, backup=None):
-    session['map_ids'] = []
-    if not backup:
-        if session.get('map_ids'):
-            session.pop('map_ids')
+    #session['map_ids'] = []
+    #if not backup:
+        #if session.get('map_ids'):
+            #session.pop('map_ids')
 
     r = get_offset_cube(lat, lng, 100000)
     msgs = Msg.get_all_points(r)
     msgs = [{'content': m.content, 'avatar': m.avatar, 'uid': m.weibo_uid, 'id': m.id, 'lat': m.lat, 'lng': m.lng, 'photo': m.photo, 'weibo_id':
         m.weibo_id} for m in msgs]
 
-    ids = set([m['id'] for m in msgs])
-    map_ids = set(session.get('map_ids', []))
-    diff = map_ids.union(ids) - map_ids
+    #ids = set([m['id'] for m in msgs])
+    #map_ids = set(session.get('map_ids', []))
+    #diff = map_ids.union(ids) - map_ids
 
-    msgs = filter(lambda x:x['id'] in diff, msgs)
+    #msgs = filter(lambda x:x['id'] in diff, msgs)
 
-    map_ids = map_ids.union(diff)
-    session['map_ids'] = list(map_ids)
-    print session['map_ids']
+    #map_ids = map_ids.union(diff)
+    #session['map_ids'] = list(map_ids)
+    #print session['map_ids']
 
     return jsonify(success=True, msgs=msgs)
 
@@ -50,11 +50,11 @@ def update():
         print 'oauth expires'
         return redirect('/oauth')
     else:
-        print oauth.account__rate_limit_status()
-        if time.time() - session.get('last_time', 0) < 10:
+        if time.time() - session.get('last_time', 0) < 30:
             print 'time less than 10 seconds'
             return ''
         #return ''
+        print oauth.account__rate_limit_status()
         mentions = oauth.statuses__mentions(since_id=0)
         session['last_time'] = time.time()
         #mentions = oauth.statuses__mentions(since_id=session.get('since_id', 0))

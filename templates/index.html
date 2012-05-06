@@ -17,6 +17,7 @@
 var map;
 var marker;
 window.infos = new Array();
+window.map_ids = new Array();
 var infowindow;   //Global infowindow created
 function initialize(lat, lng) {
   var latlng = new google.maps.LatLng(lng, lat);
@@ -42,6 +43,8 @@ function initialize(lat, lng) {
                     var msgs = data.msgs;
                     var i = 0; 
                     for ( i <0; i < msgs.length;i++ ){          
+                    if (window.map_ids.indexOf(msgs[i].id) == -1) {
+                        window.map_ids.push(msgs[i].id);
                     var showImage = "<div><a href=http://weibo.com/"+msgs[i].uid+"><img src='"+msgs[i].photo+"' width=200px height=200px/>" + "<br/><br/></a><center style=width:200px>"+msgs[i].content+"！</center></div>";
                         var infowindow = new google.maps.InfoWindow({
                                content: showImage,
@@ -52,11 +55,13 @@ function initialize(lat, lng) {
                          var photo = new google.maps.LatLng(msgs[i].lng, msgs[i].lat);
 
                          var marker = new google.maps.Marker({
+                                       animation: google.maps.Animation.DROP,
                                       position: photo,
                                       map:map,
                                       title:"Testing!",
                                });
                          popupDirections(marker, window.infos.length-1);
+                    }
                     }
 
                 }
@@ -79,7 +84,7 @@ function initialize(lat, lng) {
         update();
     }
     timeout();
-    setInterval(timeout, 30000);
+    setInterval(timeout, 1000);
 }
 
 function popupDirections(marker, index) {
